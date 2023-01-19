@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <!--#Basic Example
+    템플릿 내 표현식은 매우 편리하지만 간단한 작업을 위한 것입니다.
+    템플릿에 너무 많은 논리를 넣으면 템플릿이 부풀어 오르고 유지 관리가 어려워질 수 있습니다.
+
+    예를 들어 중첩 배열이 있는 객체가 있는 경우:
+    export default {
+      data() {
+        return {
+          author: {
+            name: 'John Doe',
+            books: [
+              'Vue 2 - Advanced Guide',
+              'Vue 3 - Basic Guide',
+              'Vue 4 - The Mystery'
+            ]
+          }
+        }
+      }
+    }
+
+
+    저자가 이미 책을 가지고 있는지 여부에 따라 다른 메시지를 표시하고 싶습니다.
+    <p>Has published books:</p>
+    <span>{{ author.books.length > 0 ? 'Yes' : 'No' }}</span>
+
+
+    이 시점에서 템플릿이 약간 복잡해집니다.
+    author.books에 따라 계산을 수행한다는 사실을 깨닫기 전에 잠시 살펴봐야 합니다.
+    더 중요한 것은 이 계산을 템플릿에 두 번 이상 포함해야 하는 경우 반복하고 싶지 않을 것입니다.
+
+    그렇기 때문에 리액티브 데이터를 포함하는 복잡한 로직의 경우 계산된 속성을 사용하는 것이 좋습니다.
+    다음은 리팩토링된 동일한 예입니다.
+
+    export default {
+      data() {
+        return {
+          author: {
+            name: 'John Doe',
+            books: [
+              'Vue 2 - Advanced Guide',
+              'Vue 3 - Basic Guide',
+              'Vue 4 - The Mystery'
+            ]
+          }
+        }
+      },
+      computed: {
+        // a computed getter
+        publishedBooksMessage() {
+          // `this` points to the component instance
+          return this.author.books.length > 0 ? 'Yes' : 'No'
+        }
+      }
+    }
+
+    <p>Has published books:</p>
+    <span>{{ publishedBooksMessage }}</span>
+    -->
+
+    <!--#Computed Caching vs. Methods
+    표현식에서 메서드를 호출하여 동일한 결과를 얻을 수 있음을 눈치챘을 것입니다.
+
+    <p>{{ calculateBooksMessage() }}</p>
+    // in component
+    methods: {
+      calculateBooksMessage() {
+        return this.author.books.length > 0 ? 'Yes' : 'No'
+      }
+    }
+
+    계산된 속성 대신 동일한 함수를 메서드로 정의할 수 있습니다. 최종 결과에 대해 두 가지 접근 방식은 실제로 정확히 동일합니다.
+    그러나 차이점은 계산된 속성이 반응 종속성에 따라 캐시된다는 것입니다. 계산된 속성은 일부 반응 종속성이 변경된 경우에만 재평가됩니다.
+    즉, author.books가 변경되지 않는 한 publishedBooksMessage에 대한 다중 액세스는 getter 함수를 다시 실행할
+    필요 없이 이전에 계산된 결과를 즉시 반환합니다.
+
+    이는 또한 Date.now()가 반응 종속성이 아니기 때문에 다음 계산 속성이 업데이트되지 않음을 의미합니다.
+
+    computed: {
+      now() {
+        return Date.now()
+      }
+    }
+
+    이에 비해 메서드 호출은 다시 렌더링이 발생할 때마다 항상 함수를 실행합니다.
+    캐싱이 필요한 이유는 무엇입니까? 거대한 배열을 반복하고 많은 계산을 수행해야 하는 값비싼 계산된 속성 목록이 있다고 상상해 보십시오.
+    그런 다음 목록에 의존하는 다른 계산된 속성을 가질 수 있습니다. 캐싱이 없다면, 우리는 필요한 것보다 훨씬 더 많이 목록의 getter를 실행하게 될 것입니다!
+    캐싱을 원하지 않는 경우 메서드 호출을 대신 사용하십시오.
+
+    -->
+
+    <!--#Writable Computed
+    계산된 속성은 기본적으로 getter 전용입니다. 계산된 속성에 새 값을 할당하려고 하면 런타임 경고가 표시됩니다.
+    드문 경우지만 "쓰기 가능한" 계산 속성이 필요한 경우 getter와 setter를 모두 제공하여 만들 수 있습니다.
+
+    export default {
+      data() {
+        return {
+          firstName: 'John',
+          lastName: 'Doe'
+        }
+      },
+      computed: {
+        fullName: {
+          // getter
+          get() {
+            return this.firstName + ' ' + this.lastName
+          },
+          // setter
+          set(newValue) {
+            // Note: we are using destructuring assignment syntax here.
+            [this.firstName, this.lastName] = newValue.split(' ')
+          }
+        }
+      }
+    }
+
+    이제 this.fullName = 'John Doe'를 실행하면 setter가 호출되고 이에 따라 this.firstName 및 this.lastName이 업데이트됩니다.
+    -->
+
+    <!--#Best Practices
+
+게터는 부작용이 없어야 합니다.#
+계산된 가져오기를 기억하는 것이 중요합니다.
+    -->
+
+
+
+</body>
+</html>

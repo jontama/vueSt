@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creating an Application</title>
+</head>
+<body>
+
+<!--
+모든 Vue 애플리케이션은 createApp 함수를 사용하여 새 애플리케이션 인스턴스를 생성
+
+import { createApp } from 'vue'
+
+const app = createApp({
+/* root component options */
+})
+================================================================
+
+import { createApp } from 'vue'
+// import the root component App from a single-file component.
+import App from './App.vue'
+
+const app = createApp(App)
+
+App (root component)
+├─ TodoList
+│  └─ TodoItem
+│     ├─ TodoDeleteButton
+│     └─ TodoEditButton
+└─ TodoFooter
+   ├─ TodoClearButton
+   └─ TodoStatistics
+
+
+<div id="app"></div>
+app.mount('#app')
+
+application instance 는 .mount() 메서드가 호출될 때까지 아무 것도 렌더링하지 않음
+
+-->
+
+
+<!--
+빌드 단계 없이 Vue를 사용하는 경우 루트 구성 요소의 템플릿을 마운트 컨테이너 내부에 직접 작성할 수 있습니다.
+-->
+<div id="app1">
+    <button @click="count++">{{ count }}</button>
+</div>
+
+<script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    const app = createApp({
+        data() {
+            return {
+                count: 0
+            }
+        }
+    })
+
+    app.mount('#app1')
+
+    //애플리케이션 인스턴스는 몇 가지 앱 수준 옵션을 구성할 수 있는 .config 개체를 노출합니다. 예를 들어 모든 하위 구성 요소에서 오류를 캡처하는 앱 수준 오류 처리기를 정의합니다.
+    app.config.errorHandler = (err) => {
+        /* handle error */
+    }
+    //애플리케이션 인스턴스는 앱 범위 자산을 등록하기 위한 몇 가지 방법도 제공합니다. 예를 들어 구성 요소를 등록하는 경우
+    app.component('TodoDeleteButton', TodoDeleteButton)
+    //이렇게 하면 앱의 어디에서나 TodoDeleteButton을 사용할 수 있습니다
+
+
+    //Multiple application instances
+
+    const app1 = createApp({
+        /* ... */
+    })
+    app1.mount('#container-1')
+
+    const app2 = createApp({
+        /* ... */
+    })
+    app2.mount('#container-2')
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
